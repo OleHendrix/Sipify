@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Satoshi'; /* Kies een naam voor je font */
+  src: url('./assets/fonts/Satoshi-Variable.ttf') format('truetype');
+  font-weight: 100 900; /* Bereik van gewichten (bijv. dun tot vet) */
+  font-style: normal; /* Standaardstijl */
+}
+
+@keyframes shake
+{
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.shake
+{
+  animation: shake 0.5s ease-in-out;
+}
+
+
