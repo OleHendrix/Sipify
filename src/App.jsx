@@ -1,4 +1,5 @@
-import {useState} from 'react'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {useState, useEffect} from 'react'
 import './index.css'
 import Home from './screens/Home'
 import StartScreen from './screens/StartScreen'
@@ -9,19 +10,24 @@ import GameLobby from './screens/GameLobby'
 
 function App()
 {
-  const [currentScreen, setCurrentScreen] = useState('home');
-  const [username, setUserName] = useState('');
+  const [username, setUserName] = useState(() => {return localStorage.getItem('username') || '' });
+  const [gamePin, setGamePin] = useState(() => {return Number(localStorage.getItem('gamepin')) || 0 });
   const [rounds, setRounds] = useState(0);
 
+  useEffect(() => {localStorage.setItem('username', username);}, [username]);
+  useEffect(() => {localStorage.setItem('gamepin', gamePin);}, [gamePin]);
+
   return (
-    <div>
-      {currentScreen === 'home' && (<Home onNavigate={setCurrentScreen}/>)}
-      {currentScreen === 'how-it-works' && (<StartScreen onNavigate={setCurrentScreen}/>)}
-      {currentScreen === 'login' && (<LoginScreen onNavigate={setCurrentScreen} setUserName={setUserName} username={username}/>)}
-      {currentScreen === 'create-game' && (<CreateGame onNavigate={setCurrentScreen} username={username} rounds={rounds} setRounds={setRounds}/>)}
-      {currentScreen === 'join-game' && (<JoinGame onNavigate={setCurrentScreen}/>)}
-      {currentScreen === 'game-lobby' && (<GameLobby onNavigate={setCurrentScreen} username={username} rounds={rounds}/>)}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/how-it-works" element={<StartScreen/>}/>
+        <Route path="/login" element={<LoginScreen setUserName={setUserName} username={username}/>}/>
+        <Route path="/create-game" element={<CreateGame username={username} rounds={rounds} setRounds={setRounds} setGamePin={setGamePin}/>}/>
+        <Route path="/join-game" element={<JoinGame username={username} gamePin={gamePin} setGamePin={setGamePin}/>}/>
+        <Route path="/game-lobby/:gamePin" element={<GameLobby username={username} rounds={rounds} gamePin={gamePin}/>}/>
+      </Routes>
+    </Router>
   );
 }
 

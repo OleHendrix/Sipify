@@ -1,10 +1,17 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import React from 'react';
 import Button from '../components/Button';
 import GameBackground from '../components/GameBackground';
 
-function GameLobby({onNavigate, username, rounds})
+
+
+
+function GameLobby({username, rounds, gamePin})
 {
-  const gamePin = Math.floor(100000 * Math.random());
+
+
 
   return (
     <div className='relative w-[375px] h-[812px] overflow-hidden z-[0]'>

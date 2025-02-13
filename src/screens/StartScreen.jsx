@@ -4,9 +4,12 @@ import Button from '../components/Button';
 import spotifyIcon from '../assets/spotifyIcon.png';
 import musicIcon from '../assets/musicIcon.png';
 import gameIcon from '../assets/gameIcon.png';
+import { useNavigate } from "react-router-dom";
 
 function StartScreen({onNavigate})
 {
+  const navigate = useNavigate();
+
   return (
     <div className='h-[812px]'>
       <LogoHomeScreen/>
@@ -42,7 +45,7 @@ function StartScreen({onNavigate})
           <p>By continuing, you accept our <a href="#" className="font-bold text-[#1DB954]">terms of use</a> and <a href="#" className="font-bold text-[#1DB954]">privacy policy</a>.</p>
         </div>
         <div className="w-full flex justify-center mt-2">
-          <Button className="mb-2.5" text="Continue" onClick={() => onNavigate('login')}/>
+          <Button className="mb-2.5" text="Continue" onClick={() => navigate('/login')}/>
         </div>
       </div>
       </div>
