@@ -8,7 +8,7 @@ async function postNewGame(username, rounds, setGamePin, navigate)
 {
   try
   {
-    const response = await axios.post('http://localhost:5001/api/create-game', {username: username, rounds: rounds,});
+    const response = await axios.post('http://localhost:5001/api/games/create', {username: username, rounds: rounds});
     setGamePin(response.data.gamePin);
     navigate(`/game-lobby/${response.data.gamePin}`);
   }

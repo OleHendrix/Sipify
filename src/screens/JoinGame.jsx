@@ -13,7 +13,7 @@ async function postJoinGame(username, gamePin, navigate, triggerShake)
   {
     try 
     {
-      const response = await axios.post('http://localhost:5001/api/join-game', {username: username, gamePin: gamePin});
+      const response = await axios.post('http://localhost:5001/api/games/join', {username: username, gamePin: gamePin});
       if (response.data.success)
         navigate(`/game-lobby/${gamePin}`);
       else
