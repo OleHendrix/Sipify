@@ -1,0 +1,84 @@
+const express = require("express");
+const sqlite3 = require("sqlite3").verbose();
+
+const router = express.Router();
+const db = new sqlite3.Database("./database.sqlite"); // Zorg dat dit correct wijst naar je DB
+
+router.post("/add_tracks", async (req, res) => {
+    try {
+        const { username, gamePin, tracks } = req.body;
+
+        if (!username || !gamePin || !tracks || !Array.isArray(tracks)) {
+            return res.status(400).json({ error: "Invalid request data" });
+        }
+
+        // Haal de player_id op (aanname: username en gamePin zijn uniek samen)
+        db.get("SELECT id FROM players WHERE username = ? AND gamePin = ?", [username, gamePin], (err, player) => {
+            if (err || !player) {
+                return res.status(400).json({ error: "Player not found" });
+            }
+
+            const player_id = player.id;
+
+            // Loop door de tracks en voeg ze toe aan de database
+            tracks.forEach(trackObj => {
+                const track = trackObj.track; // Pak de 'track' object uit de Spotify API data
+                const spotify_id = track.id;
+                const title = track.name;
+                const artist = track.artists.map(a => a.name).join(", "); // Meerdere artiesten samenvoegen
+                const album = track.album.name;
+                const duration_ms = track.duration_ms;
+                const url = track.external_urls.spotify;
+
+                // Stap 1: Check of de track al in de database staat
+                db.get("SELECT id FROM tracks WHERE spotify_id = ?", [spotify_id], (err, existingTrack) => {
+                    if (err) {
+                        console.error("DB error:", err);
+                        return;
+                    }
+
+                    if (!existingTrack) {
+                        // Stap 2: Track nog niet in database, dus voeg toe
+                        db.run(
+                            "INSERT INTO tracks (spotify_id, title, artist, album, duration_ms, url) VALUES (?, ?, ?, ?, ?, ?)",
+                            [spotify_id, title, artist, album, duration_ms, url],
+                            function (err) {
+                                if (err) {
+                                    console.error("Error inserting track:", err);
+                                    return;
+                                }
+
+                                const track_id = this.lastID;
+
+                                // Stap 3: Koppel track aan speler in `playerTracks`
+                                db.run(
+                                    "INSERT INTO playerTracks (player_id, gamePin, track_id) VALUES (?, ?, ?)",
+                                    [player_id, gamePin, track_id],
+                                    (err) => {
+                                        if (err) console.error("Error inserting into playerTracks:", err);
+                                    }
+                                );
+                            }
+                        );
+                    } else {
+                        // Stap 3: Track bestaat al, voeg alleen de koppeling toe
+                        db.run(
+                            "INSERT INTO playerTracks (player_id, gamePin, track_id) VALUES (?, ?, ?)",
+                            [player_id, gamePin, existingTrack.id],
+                            (err) => {
+                                if (err) console.error("Error inserting into playerTracks:", err);
+                            }
+                        );
+                    }
+                });
+            });
+
+            res.json({ success: true, message: "Tracks opgeslagen!" });
+        });
+    } catch (error) {
+        console.error("❌ Error:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+module.exports = router;

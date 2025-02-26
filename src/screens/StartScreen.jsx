@@ -1,9 +1,10 @@
 import React from 'react';
 import LogoHomeScreen from '../components/LogoHomeScreen';
 import Button from '../components/Button';
-import spotifyIcon from '../assets/spotifyIcon.png';
-import musicIcon from '../assets/musicIcon.png';
-import gameIcon from '../assets/gameIcon.png';
+import Lottie from "lottie-react";
+import Link from "../assets/Link.json";
+import Music from "../assets/Music.json";
+import Rocket from "../assets/Rocket.json";
 import { useNavigate } from "react-router-dom";
 
 function StartScreen({onNavigate})
@@ -18,26 +19,26 @@ function StartScreen({onNavigate})
         <h2 className="text-[18px] text-gray-400 flex justify-center mb-4">How it works.</h2>
         
         <div className="flex items-start gap-2.5 mb-4">
-          <img src={spotifyIcon} alt="Spotify" className="w-[50px] h-[50px] min-w-[50px] flex items-center justify-center" />
+          <Lottie animationData={Link} className="w-[40px] h-[40px] min-w-[50px] flex items-center justify-center"/>
           <div className="text-[14px] text-gray-400 mb-1">
             <h3>Connect Your Spotify</h3>
-            <p className="text-[12px] pb-1 text-white leading-relaxed border-b border-white border-opacity-15">The game imports your top songs from the past years.</p>
+            <p className="text-[12px] pb-1 text-white leading-relaxed border-b border-white border-opacity-15">The game imports all of your liked songs from Spotify.</p>
           </div>
         </div>
 
         <div className="flex items-start gap-2.5 mb-4">
-         <img src={musicIcon} alt="Spotify" className="w-[50px] h-[50px] min-w-[50px] flex items-center justify-center" />
+          <Lottie animationData={Music} className="w-[40px] h-[40px] min-w-[50px] flex items-center justify-center"/>
           <div className="text-[14px] text-gray-400 mb-1">
             <h3>Listen & Guess</h3>
-            <p className="text-[12px] pb-1 text-white leading-relaxed border-b border-white border-opacity-15">You choose a detail (title, artist, or year) and guess it blind.</p>
+            <p className="text-[12px] pb-1 text-white leading-relaxed border-b border-white border-opacity-15">A random track will be played from a random player in your group.</p>
           </div>
         </div>
 
         <div className="flex items-start gap-2.5 mb-4">
-         <img src={gameIcon} alt="Spotify" className="w-[50px] h-[50px] min-w-[50px] flex items-center justify-center" />
+         <Lottie animationData={Rocket} className="w-[40px] h-[40px] min-w-[50px] flex items-center justify-center"/>
           <div className="text-[14px] text-gray-400 mb-1">
-            <h3>Drink or Hand Out Sips</h3>
-            <p className="text-[12px] pb-1 text-white leading-relaxed border-b border-white border-opacity-15">A correct guess lets you pick who drinks, a wrong guess means you drink.</p>
+            <h3>Guess the player</h3>
+            <p className="text-[12px] pb-1 text-white leading-relaxed border-b border-white border-opacity-15">Guess the player which liked song is played and become the winner.</p>
           </div>
         </div>
 

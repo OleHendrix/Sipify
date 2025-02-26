@@ -7,18 +7,17 @@ import LoginScreen from './screens/LoginScreen'
 import CreateGame from './screens/CreateGame'
 import JoinGame from './screens/JoinGame'
 import GameLobby from './screens/GameLobby'
+import Play from './screens/Play'
 
 function App()
 {
-  const [username, setUserName] = useState('');
-  const [gamePin, setGamePin] = useState(0);
+  localStorage.clear();
+  const [username, setUserName] = useState(() => {return localStorage.getItem('username') || '' });
+  const [gamePin, setGamePin] = useState(() => {return Number(localStorage.getItem('gamepin')) || 0 });
   const [rounds, setRounds] = useState(0);
-  // const [username, setUserName] = useState(() => {return localStorage.getItem('username') || '' });
-  // const [gamePin, setGamePin] = useState(() => {return Number(localStorage.getItem('gamepin')) || 0 });
-  // const [rounds, setRounds] = useState(0);
 
-  // useEffect(() => {localStorage.setItem('username', username);}, [username]);
-  // useEffect(() => {localStorage.setItem('gamepin', gamePin);}, [gamePin]);
+  useEffect(() => {localStorage.setItem('username', username);}, [username]);
+  useEffect(() => {localStorage.setItem('gamepin', gamePin);}, [gamePin]);
 
   return (
     <Router>
@@ -29,6 +28,7 @@ function App()
         <Route path="/create-game" element={<CreateGame username={username} rounds={rounds} setRounds={setRounds} setGamePin={setGamePin}/>}/>
         <Route path="/join-game" element={<JoinGame username={username} gamePin={gamePin} setGamePin={setGamePin}/>}/>
         <Route path="/game-lobby/:gamePin" element={<GameLobby/>}/>
+        <Route path="/play/:gamePin" element={<Play/>}/>
       </Routes>
     </Router>
   );
