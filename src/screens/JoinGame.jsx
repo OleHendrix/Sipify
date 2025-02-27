@@ -15,7 +15,7 @@ async function postJoinGame(username, gamePin, triggerShake)
 	{
 		const response = await axios.post('http://localhost:5001/api/games/join', {username: username, gamePin: gamePin});
 		if (response.data.success)
-			window.location.href = `http://localhost:5001/api/spotify/login?gamePin=${gamePin}&username=${encodeURIComponent(username)}`;
+			window.location.href = `http://localhost:5001/api/spotify/login?gamePin=${gamePin}&username=${encodeURIComponent(username)}&host=${false}`;
 		else
 		{
 			triggerShake();

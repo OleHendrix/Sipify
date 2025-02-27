@@ -64,6 +64,7 @@ async function getTracks(accessToken)
           headers: { Authorization: `Bearer ${accessToken}`}
         });
         tracks = tracks.concat(response.data.items);
+        return (tracks);                              //test 
         url = response.data.next;  
       }
       return tracks;
@@ -142,7 +143,7 @@ function GameLobby()
         </div>
         <div className='flex flex-col items-center space-y-2'>
           <p className='text-[16px] text-white'>{rounds} rounds</p>
-          <Button className={'shadow-2xl'} text="Start game" onClick={() => {players.every(player => player.isLoading === 1) && navigate(`/play/${gamePin}`)}}/>
+          <Button className={'shadow-2xl'} text="Start game" onClick={() => {players.every(player => player.isLoading === 0) && navigate(`/play/${gamePin}`)}}/>
         </div>
       </div>
     </div>

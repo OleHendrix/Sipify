@@ -78,5 +78,18 @@ router.post("/get", (req, res) =>
         });
     })
 })
+
+router.post("/host", (req, res) =>
+{
+    const gamePin = req.body.gamePin;
+
+    db.get("SELECT host FROM games WHERE pin = ?", [gamePin], (err, row) =>
+    {
+        if (err || !row)
+            return res.status(500).json({ success: false, error: "Error" });
+        const host = row.host;
+        res.json({host: host});
+    })
+})
         
 export default router;

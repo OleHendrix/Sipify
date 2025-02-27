@@ -11,7 +11,7 @@ import Play from './screens/Play'
 
 function App()
 {
-  localStorage.clear();
+  // localStorage.clear();
   const [username, setUserName] = useState(() => {return localStorage.getItem('username') || '' });
   const [gamePin, setGamePin] = useState(() => {return Number(localStorage.getItem('gamepin')) || 0 });
   const [rounds, setRounds] = useState(0);

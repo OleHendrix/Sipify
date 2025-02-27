@@ -11,7 +11,7 @@ async function postNewGame(username, rounds, setGamePin)
     const response = await axios.post('http://localhost:5001/api/games/create', {username: username, rounds: rounds});
     const gamePin = response.data.gamePin;
     setGamePin(gamePin);
-    window.location.href = `http://localhost:5001/api/spotify/login?gamePin=${gamePin}&username=${encodeURIComponent(username)}`;
+    window.location.href = `http://localhost:5001/api/spotify/login?gamePin=${gamePin}&username=${encodeURIComponent(username)}&host=${true}`;
   }
   catch (error)
   {

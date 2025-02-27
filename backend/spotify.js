@@ -56,12 +56,12 @@ router.get("/handle_redirect", async (req, res) =>
 
 router.get("/login", (req, res) =>
 {
-    const { gamePin, username } = req.query;
+    const { gamePin, username, host } = req.query;
     const authURL = `https://accounts.spotify.com/authorize?` +
         `client_id=3f9f6ea40d8c4a72bed1df132bb420ab` +
         `&response_type=code` +
         `&redirect_uri=http://localhost:5001/api/spotify/handle_redirect` +
-        `&scope=playlist-read-private user-read-private user-read-email user-library-read` + 
+        `&scope=playlist-read-private user-read-private user-read-email user-library-read ${host ? 'streaming' : ''}` + 
         `&state=${encodeURIComponent(JSON.stringify({ gamePin, username }))}` +
         `&show_dialog=true`;
     res.redirect(authURL);
