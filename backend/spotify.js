@@ -1,6 +1,7 @@
 import express from "express";
 import axios from "axios";
-import db from "./database.js";
+import supabase from "./supabase.js";
+// import db from "./database.js";
 
 const router = express.Router();
 
@@ -57,6 +58,7 @@ router.get("/handle_redirect", async (req, res) =>
 router.get("/login", (req, res) =>
 {
     const { gamePin, username, host } = req.query;
+    console.log(host);
     const authURL = `https://accounts.spotify.com/authorize?` +
         `client_id=3f9f6ea40d8c4a72bed1df132bb420ab` +
         `&response_type=code` +
@@ -67,67 +69,39 @@ router.get("/login", (req, res) =>
     res.redirect(authURL);
 });
 
-router.post("/add_tracks", (req, res) =>
+router.post("/add_tracks", async (req, res) =>
 {
-    const {username, gamePin, tracks} = req.body;
+    const { username, gamePin, tracks } = req.body;
+
     if (!username || !gamePin || !tracks)
         return res.status(400).json({ error: "Invalid request data" });
-    db.get("SELECT id FROM players WHERE username = ? AND gamePin = ?", [username, gamePin], (err, player) =>
-    {
-        if (err || !player)
-            return res.status(400).json({ error: "Player not found" });
-        const player_id = player.id;
-        for (let i = 0; i < tracks.length; i ++)
-        {
-            const track = tracks[i].track;
-            const spotify_id = track.id;
-            const title = track.name;
-            const artist = track.artists.map(a => a.name).join(", ");
-            const url = track.external_urls.spotify;
 
-            db.get("SELECT id FROM tracks WHERE spotify_id = ?", [spotify_id], (err, exististingTrack) =>
-            {
-                if (err)
-                {
-                    console.error("DB error:", err);
-                    return;
-                }
-                if (!exististingTrack)
-                {
-                    db.run("INSERT INTO tracks (spotify_id, title, artist, url) VALUES (?, ?, ?, ?)", [spotify_id, title, artist, url], function (err)
-                    {
-                        if (err)
-                        {
-                            console.error("Error inserting track", err);artist
-                            return;
-                        }
-                        const track_id = this.lastID;
-                        db.run("INSERT INTO playerTracks (player_id, gamePin, track_id) VALUES (?, ?, ?)", [player_id, gamePin, track_id], (err) =>
-                        {
-                            if (err)
-                            {
-                                console.error("Error inserting into playerTracks:", err);
-                                return;
-                            }
-                        });
-                    })
-                }
-                else
-                {
-                    db.run("INSERT INTO playerTracks (player_id, gamePin, track_id) VALUES (?, ?, ?)", [player_id, gamePin, exististingTrack.id], (err) =>
-                    {
-                        if (err)
-                        {
-                            console.error("Error inserting into playerTracks (existing)", err);
-                            return;
-                        }
-                    });
-                }
-            });
-        }
-    });
+    // 1️⃣ Check of speler bestaat
+    const { data: player, error: playerError } = await supabase.from('players').select('id').eq('username', username).eq('gamePin', gamePin).single();
+    if (playerError || !player)
+        return res.status(400).json({ error: "Player not found" });
+
+    const player_id = player.id;
+
+    // 2️⃣ Loop door alle tracks heen
+    for (let i = 0; i < tracks.length; i++)
+    {
+        const track = tracks[i].track;
+        const spotify_id = track.id;
+        const title = track.name;
+        const artist = track.artists.map(a => a.name).join(", ");
+        const url = track.external_urls.spotify;
+        const { data: newTrack, error: insertTrackError } = await supabase.from('tracks').insert([{ spotify_id, title, artist, url }]).select('id').single();
+        if (insertTrackError)
+            continue;
+        const track_id = newTrack.id;
+        const { error: playerTrackError } = await supabase.from('playerTracks').insert([{ player_id, gamePin, track_id }]);
+        if (playerTrackError)
+            console.error("Error inserting into playerTracks:", playerTrackError);
+    }
     res.json({ success: true, message: "Tracks added!" });
 });
+
 
 export default router;
 

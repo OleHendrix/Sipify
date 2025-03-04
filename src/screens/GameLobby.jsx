@@ -82,7 +82,7 @@ async function setTracksInDatabase(username, gamePin, tracks)
   try
   {
     const response = await axios.post("http://localhost:5001/api/spotify/add_tracks", {username, gamePin, tracks});
-    console.log(response.data);
+    // console.log(response.data);
   }
   catch (err)
   {
@@ -143,7 +143,7 @@ function GameLobby()
         </div>
         <div className='flex flex-col items-center space-y-2'>
           <p className='text-[16px] text-white'>{rounds} rounds</p>
-          <Button className={'shadow-2xl'} text="Start game" onClick={() => {players.every(player => player.isLoading === 0) && navigate(`/play/${gamePin}`)}}/>
+          <Button className={'shadow-2xl'} text="Start game" onClick={() => {players.every(player => player.isLoading === false) && navigate(`/play/${gamePin}`)}}/>
         </div>
       </div>
     </div>

@@ -4,8 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm run reset-db && concurrently \"npm run dev:client\" \"npm run dev:server\"",
-    "reset-db": "rm -f backend/games.db",
+    "dev": "npm run && concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "vite",
     "dev:server": "cd backend && npm start",
     "build": "vite build",
@@ -13,11 +12,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
     "axios": "^1.7.9",
     "lottie-react": "^2.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.5",
+    "react-spotify-web-playback": "^0.14.7",
     "socket.io-client": "^4.8.1",
     "sqlite3": "^5.1.7"
   },
